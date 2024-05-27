@@ -16,7 +16,26 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`flex flex-col ${inter.className}`}>
+        <header className={"sticky top-0"}>
+            <nav className={"flex justify-between items-center p-4"}>
+                {/*TODO MUNGKIN NNTI GANTI LOGO*/}
+                {/*TODO NNTI STYLE*/}
+                <h1>Pokedex</h1>
+                <ul className={"flex list-none gap-4"}>
+                    <li >
+                        <a href="#">Home</a>
+                    </li>
+                    <li>
+                        <a href="#">Compare</a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        <main className={"grow p-4"}>
+            {children}
+        </main>
+      </body>
     </html>
   );
 }
