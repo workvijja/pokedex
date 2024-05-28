@@ -20,7 +20,7 @@ export const filteredPokemonAtom = atom<Array<Pokemon>|undefined>((get) => {
     const isAscending = get(sortAscendingPokemonAtom)
     const filterByType = get(filterByTypePokemonAtom)
 
-    if (!pokemons) return []
+    if (!pokemons) return undefined
 
     return matchSorter(pokemons, search, {keys: ["name"]})
         .filter((pokemon) => {

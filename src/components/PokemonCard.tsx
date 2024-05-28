@@ -1,6 +1,8 @@
+"use client"
+
 import {PokemonTypeColors} from "@/constants/pokemonTypeColors";
 import PokemonTypeTag from "@/components/PokemonTypeTag";
-import Image from "next/image"
+import {AspectRatio} from "@/components/ui/aspect-ratio";
 
 interface PokemonCardProps {
     name: string
@@ -10,10 +12,12 @@ interface PokemonCardProps {
 
 const pokemonCard = ({name, image, types}: PokemonCardProps) => {
     return (
-        <div className={"flex flex-col items-center border rounded-md shadow-md p-4 gap-2"}>
-            <Image alt={"Pokemon Image"} src={image} width={200} height={200} className={"border"} />
-            <h1 className={"font-bold"} >{name}</h1>
-            <div className={"flex flex-wrap justify-center"}>
+        <div className={"w-full flex flex-col items-center border rounded-md shadow-md p-4 gap-2"}>
+            <AspectRatio className={"w-full"} ratio={1}>
+                <img alt={"Pokemon Image"} src={image} className={"w-full h-full"} />
+            </AspectRatio>
+            <h1 className={"font-bold truncate w-full text-center"} >{name}</h1>
+            <div className={"flex flex-wrap justify-center gap-1"}>
                 {types.map(type => <PokemonTypeTag key={type} name={type}/>)}
             </div>
         </div>
