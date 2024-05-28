@@ -1,3 +1,5 @@
+"use client"
+
 import {Input} from "@/components/ui/input";
 import { useAtom } from "jotai";
 import { Search } from "lucide-react";
