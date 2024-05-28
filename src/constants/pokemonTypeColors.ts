@@ -40,4 +40,6 @@ const pokemonTypeColors: PokemonTypeColors = {
     "fairy": '#F4BCE9',
 }
 
+export const pokemonTypeColorsKeys: Array<keyof PokemonTypeColors> = Object.keys(pokemonTypeColors) as Array<keyof PokemonTypeColors>
+
 export default pokemonTypeColors
