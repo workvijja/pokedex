@@ -1,9 +1,12 @@
-import {atom} from "jotai"
+import {atom, WritableAtom} from "jotai"
 import {Pokemon} from "@/app/page";
 import {PokemonTypeColors} from "@/constants/pokemonTypeColors";
 import {matchSorter} from "match-sorter";
+import {chunk, filter} from "lodash";
 
 export const pokemonsAtom = atom<Array<Pokemon>|undefined>([])
+
+export const totalPokemonAtom = atom<number>((get) => get(filteredPokemonAtom)?.length || 0)
 
 export const searchPokemonAtom = atom<string>("")
 
@@ -11,27 +14,56 @@ export const sortAscendingPokemonAtom = atom<boolean>(true)
 
 export const filterByTypePokemonAtom = atom<keyof PokemonTypeColors|null>(null)
 
-// NNTI TAMBAH PAGINATION
-// KEKNYA BETTER PKE CHAIN LODASH
+
+export const paginationPokemonAtom = atom<number>(0)
+
+export const paginationControlPokemonAtom:WritableAtom<number, [page:number], any> = atom(
+    (get) => get(paginationPokemonAtom),
+    (get, set, page) => {
+        set(paginationPokemonAtom, Math.min(0, Math.max(page, get(totalPagePokemonAtom) - 1)))
+    }
+)
+
+export const limitPokemonAtom = atom<number>(20)
 // CEK PERLU ATOMFAMILY ATO NGGA
-export const filteredPokemonAtom = atom<Array<Pokemon>|undefined>((get) => {
+const filteredPokemonAtom = atom<Array<Pokemon>|undefined>((get) => {
     const pokemons = get(pokemonsAtom)
-    const search = get(searchPokemonAtom)
-    const isAscending = get(sortAscendingPokemonAtom)
     const filterByType = get(filterByTypePokemonAtom)
 
     if (!pokemons) return undefined
 
-    return matchSorter(pokemons, search, {keys: ["name"]})
-        .filter((pokemon) => {
-            if (!filterByType) return true
-            return pokemon.types.includes(filterByType)
-        })
-        .sort((a, b) => {
-            if (isAscending) {
-                return a.name.localeCompare(b.name)
-            } else {
-                return b.name.localeCompare(a.name)
-            }
-        })
+    return filter(pokemons, (pokemon) => {
+        if (!filterByType) return true
+        return pokemon.types.includes(filterByType)
+    })
+})
+
+const searchedPokemonAtom = atom<Array<Pokemon>|undefined>((get) => {
+    const pokemons = get(filteredPokemonAtom)
+    const search = get(searchPokemonAtom)
+    const isAscending = get(sortAscendingPokemonAtom)
+
+    if (!pokemons) return undefined
+
+    return matchSorter(pokemons, search, {keys: ["name"], sorter: (arr) => isAscending ? arr : arr.reverse()})
+})
+
+const paginatedPokemonAtom = atom<Array<Array<Pokemon>>|undefined>((get) => {
+    const pokemons = get(searchedPokemonAtom)
+    const limit = get(limitPokemonAtom)
+    if (!pokemons) return undefined
+    return chunk(pokemons, limit)
+})
+
+const totalPagePokemonAtom = atom<number>((get) => {
+    const paginatedPokemon = get(paginatedPokemonAtom)
+    if (!paginatedPokemon) return 0
+    return paginatedPokemon.length
+})
+
+export const currentPagePokemonAtom = atom<Array<Pokemon>|undefined>((get) => {
+    const paginatedPokemon = get(paginatedPokemonAtom)
+    if (!paginatedPokemon) return undefined
+    const activePage:number = Math.min(0, Math.max(get(paginationPokemonAtom), get(totalPagePokemonAtom) - 1))
+    return paginatedPokemon[activePage]
 })

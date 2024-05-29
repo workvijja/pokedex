@@ -1,6 +1,6 @@
 "use client"
 
-import {filteredPokemonAtom} from "@/atoms/pokemonsAtom";
+import {currentPagePokemonAtom} from "@/atoms/pokemonsAtom";
 import {useAtomValue} from "jotai";
 import Card from "@/components/pokedex/grid/Card";
 
@@ -13,20 +13,25 @@ const Container = ({children}: Readonly<{children: React.ReactNode}>) => {
 }
 
 const Grid = () => {
-    const pokemons = useAtomValue(filteredPokemonAtom)
+    const pokemons = useAtomValue(currentPagePokemonAtom)
 
+    // error
     if (!pokemons) return (<></>)
+
+    // empty
+    if (pokemons.length === 0) return (<></>)
 
     return (
         <Container>
             {
-                pokemons.map(({name, image, types}) => (
+                pokemons.map(({id, name, image, types}) => (
                     <Card
-                        key={name}
+                        key={id}
                         className={"col-span-1"}
                         name={name}
                         image={image}
                         types={types}
+                        onClick={() => {console.log(id, name)}}
                     />
                 ))
             }
