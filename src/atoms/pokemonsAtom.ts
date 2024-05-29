@@ -2,11 +2,11 @@ import {atom, WritableAtom} from "jotai"
 import {Pokemon} from "@/app/page";
 import {PokemonTypeColors} from "@/constants/pokemonTypeColors";
 import {matchSorter} from "match-sorter";
-import {chunk, filter} from "lodash";
+import {chunk, filter, clamp} from "lodash";
 
 export const pokemonsAtom = atom<Array<Pokemon>|undefined>([])
 
-export const totalPokemonAtom = atom<number>((get) => get(filteredPokemonAtom)?.length || 0)
+export const totalPokemonAtom = atom<number>((get) => get(searchedPokemonAtom)?.length || 0)
 
 export const searchPokemonAtom = atom<string>("")
 
@@ -20,7 +20,7 @@ export const paginationPokemonAtom = atom<number>(0)
 export const paginationControlPokemonAtom:WritableAtom<number, [page:number], any> = atom(
     (get) => get(paginationPokemonAtom),
     (get, set, page) => {
-        set(paginationPokemonAtom, Math.min(0, Math.max(page, get(totalPagePokemonAtom) - 1)))
+        set(paginationPokemonAtom, clamp(0, page, get(totalPagePokemonAtom) - 1))
     }
 )
 
@@ -64,6 +64,8 @@ const totalPagePokemonAtom = atom<number>((get) => {
 export const currentPagePokemonAtom = atom<Array<Pokemon>|undefined>((get) => {
     const paginatedPokemon = get(paginatedPokemonAtom)
     if (!paginatedPokemon) return undefined
-    const activePage:number = Math.min(0, Math.max(get(paginationPokemonAtom), get(totalPagePokemonAtom) - 1))
+    const activePage:number = clamp(0, get(paginationPokemonAtom), get(totalPagePokemonAtom) - 1)
     return paginatedPokemon[activePage]
 })
+
+export const currentPageTotalPokemonAtom = atom<number>((get) => get(currentPagePokemonAtom)?.length || 0)
