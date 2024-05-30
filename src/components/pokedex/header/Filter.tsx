@@ -1,9 +1,9 @@
 "use client"
 
 import {Button} from "@/components/ui/button";
-import {useAtom} from "jotai";
+import {PrimitiveAtom, useAtom} from "jotai";
 import {filterByTypePokemonAtom} from "@/atoms/pokemonsAtom";
-import {pokemonTypeColorsKeys} from "@/constants/pokemonTypeColors";
+import {PokemonTypeColors, pokemonTypeColorsKeys} from "@/constants/pokemonTypeColors";
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -13,8 +13,8 @@ import {
 import {Filter as FilterIcon} from "lucide-react"
 import {ScrollArea, ScrollBar} from "@/components/ui/scroll-area";
 
-const Filter = () => {
-    const [filter, setFilter] = useAtom(filterByTypePokemonAtom)
+const Filter = ({atom=filterByTypePokemonAtom}:{atom?:PrimitiveAtom<keyof PokemonTypeColors|null>}) => {
+    const [filter, setFilter] = useAtom(atom)
 
     return (
         <DropdownMenu>

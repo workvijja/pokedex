@@ -1,0 +1,1 @@
+export const pokemonStats = ["HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"]

@@ -3,6 +3,7 @@ import {Pokemon} from "@/app/page";
 import {PokemonTypeColors} from "@/constants/pokemonTypeColors";
 import {matchSorter} from "match-sorter";
 import {chunk, filter, clamp} from "lodash";
+import {atomFamily} from "jotai/utils";
 
 export const pokemonsAtom = atom<Array<Pokemon>|undefined>([])
 
@@ -14,8 +15,7 @@ export const sortAscendingPokemonAtom = atom<boolean>(true)
 
 export const filterByTypePokemonAtom = atom<keyof PokemonTypeColors|null>(null)
 
-
-export const paginationPokemonAtom = atom<number>(0)
+const paginationPokemonAtom = atom<number>(0)
 
 export const paginationControlPokemonAtom:WritableAtom<number, [page:number], any> = atom(
     (get) => get(paginationPokemonAtom),
@@ -25,7 +25,7 @@ export const paginationControlPokemonAtom:WritableAtom<number, [page:number], an
 )
 
 export const limitPokemonAtom = atom<number>(20)
-// CEK PERLU ATOMFAMILY ATO NGGA
+
 const filteredPokemonAtom = atom<Array<Pokemon>|undefined>((get) => {
     const pokemons = get(pokemonsAtom)
     const filterByType = get(filterByTypePokemonAtom)
@@ -55,7 +55,7 @@ const paginatedPokemonAtom = atom<Array<Array<Pokemon>>|undefined>((get) => {
     return chunk(pokemons, limit)
 })
 
-const totalPagePokemonAtom = atom<number>((get) => {
+export const totalPagePokemonAtom = atom<number>((get) => {
     const paginatedPokemon = get(paginatedPokemonAtom)
     if (!paginatedPokemon) return 0
     return paginatedPokemon.length
@@ -69,3 +69,16 @@ export const currentPagePokemonAtom = atom<Array<Pokemon>|undefined>((get) => {
 })
 
 export const currentPageTotalPokemonAtom = atom<number>((get) => get(currentPagePokemonAtom)?.length || 0)
+
+export const prevAndNextPokemonAtom = atomFamily((id:number) => atom((get) => {
+    const pokemons = get(pokemonsAtom)
+
+    if (!pokemons) return {prev: null, next:null}
+
+    const index = pokemons.findIndex((pokemon) => pokemon.id === id)
+
+    return {
+        prev: index > 0 ? pokemons[index - 1].id : null,
+        next: index < pokemons.length - 1 ? pokemons[index + 1].id : null
+    }
+}))

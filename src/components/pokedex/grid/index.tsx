@@ -3,16 +3,17 @@
 import {currentPagePokemonAtom} from "@/atoms/pokemonsAtom";
 import {useAtomValue} from "jotai";
 import Card from "@/components/pokedex/grid/Card";
+import {cn} from "@/lib/utils";
 
-const Container = ({children}: Readonly<{children: React.ReactNode}>) => {
+const Container = ({children, className}: Readonly<{children: React.ReactNode, className?: string}>) => {
     return (
-        <div className={"grid gap-4 grid-cols-2 sm:grid-cols-4 md:grid-cols-6"}>
+        <div className={cn("grid gap-4 grid-cols-2 sm:grid-cols-4 md:grid-cols-6", className)}>
             {children}
         </div>
     )
 }
 
-const Grid = () => {
+const Grid = ({handleChildClick=()=>{}}:Readonly<{ handleChildClick?: (id:number) => void }>) => {
     const pokemons = useAtomValue(currentPagePokemonAtom)
 
     // error
@@ -31,7 +32,7 @@ const Grid = () => {
                         name={name}
                         image={image}
                         types={types}
-                        onClick={() => {console.log(id, name)}}
+                        onClick={() => {handleChildClick(id)}}
                     />
                 ))
             }
@@ -40,5 +41,6 @@ const Grid = () => {
 }
 
 Grid.Container = Container
+Grid.Card = Card
 
 export default Grid

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import {Button} from "@/components/ui/button";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,23 +18,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`flex flex-col ${inter.className}`}>
-        <header className={"sticky top-0"}>
-            <nav className={"flex justify-between items-center p-4"}>
+      <body className={`h-screen grid grid-rows-10 ${inter.className}`}>
+        <header className={"row-span-1"}>
+            <nav className={"h-full flex justify-between items-center p-4 border"}>
                 {/*TODO MUNGKIN NNTI GANTI LOGO*/}
-                {/*TODO NNTI STYLE*/}
                 <h1>Pokedex</h1>
-                <ul className={"flex list-none gap-4"}>
-                    <li >
-                        <a href="#">Home</a>
-                    </li>
-                    <li>
-                        <a href="#">Compare</a>
-                    </li>
+                <ul className={"flex list-none gap-6"}>
+                    <Button variant={"link"} className={"p-0"} asChild>
+                        <Link href={"/"}>Home</Link>
+                    </Button>
+                    <Button variant={"link"} className={"p-0"} asChild>
+                        <Link href={"/compare"}>Compare</Link>
+                    </Button>
                 </ul>
             </nav>
         </header>
-        <main className={"grow p-4"}>
+        <main className={"row-span-11 p-4"}>
             {children}
         </main>
       </body>

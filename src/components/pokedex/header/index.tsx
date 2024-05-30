@@ -4,10 +4,11 @@ import SearchInput from "@/components/pokedex/header/Search";
 import Sort from "@/components/pokedex/header/Sort";
 import Filter from "@/components/pokedex/header/Filter";
 import React from "react";
+import {cn} from "@/lib/utils";
 
-const HeaderContainer = ({children}: Readonly<{children: React.ReactNode}>) => {
+const HeaderContainer = ({children, className, ...props}: Readonly<{children: React.ReactNode, [key:string]:any}>) => {
     return (
-        <div className={"flex justify-between items-center"}>
+        <div className={cn("flex justify-between items-center", className)} {...props}>
             {children}
         </div>
     )
@@ -21,9 +22,9 @@ const RightContainer = ({children}: Readonly<{children: React.ReactNode}>) => {
     )
 }
 
-const Header = () => {
+const Header = (props:Readonly<{[key:string]:any}>) => {
     return (
-        <HeaderContainer>
+        <HeaderContainer {...props}>
             <SearchInput/>
             <RightContainer>
                 <Sort/>

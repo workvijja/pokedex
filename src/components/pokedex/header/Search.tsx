@@ -1,15 +1,15 @@
 "use client"
 
 import {Input} from "@/components/ui/input";
-import { useAtom } from "jotai";
+import {PrimitiveAtom, useAtom} from "jotai";
 import { Search } from "lucide-react";
 import {searchPokemonAtom} from "@/atoms/pokemonsAtom";
 import React from "react";
 
 // NNTI ADA KEMUNGKINAN BISA MASUKIN ATOM
 // NNTI COBA PKE DEBOUNCE
-const SearchInput = () => {
-    const [search, setSearch] = useAtom(searchPokemonAtom)
+const SearchInput = ({atom=searchPokemonAtom}:{atom?:PrimitiveAtom<string>}) => {
+    const [search, setSearch] = useAtom(atom)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(e.target.value)
