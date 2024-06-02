@@ -16,11 +16,7 @@ const Container = ({children, className}: Readonly<{children: React.ReactNode, c
 const Grid = ({handleChildClick=()=>{}}:Readonly<{ handleChildClick?: (id:number) => void }>) => {
     const pokemons = useAtomValue(currentPagePokemonAtom)
 
-    // error
-    if (!pokemons) return (<></>)
-
-    // empty
-    if (pokemons.length === 0) return (<></>)
+    if (!pokemons || pokemons.length === 0) return (<></>)
 
     return (
         <Container>

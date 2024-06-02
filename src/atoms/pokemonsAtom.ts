@@ -5,7 +5,7 @@ import {matchSorter} from "match-sorter";
 import {chunk, filter, clamp} from "lodash";
 import {atomFamily} from "jotai/utils";
 
-export const pokemonsAtom = atom<Array<Pokemon>|undefined>([])
+export const pokemonsAtom = atom<Array<Pokemon>>([])
 
 export const totalPokemonAtom = atom<number>((get) => get(searchedPokemonAtom)?.length || 0)
 
@@ -26,11 +26,11 @@ export const paginationControlPokemonAtom:WritableAtom<number, [page:number], an
 
 export const limitPokemonAtom = atom<number>(20)
 
-const filteredPokemonAtom = atom<Array<Pokemon>|undefined>((get) => {
+const filteredPokemonAtom = atom<Array<Pokemon>>((get) => {
     const pokemons = get(pokemonsAtom)
     const filterByType = get(filterByTypePokemonAtom)
 
-    if (!pokemons) return undefined
+    // if (!pokemons) return undefined
 
     return filter(pokemons, (pokemon) => {
         if (!filterByType) return true
@@ -38,20 +38,20 @@ const filteredPokemonAtom = atom<Array<Pokemon>|undefined>((get) => {
     })
 })
 
-const searchedPokemonAtom = atom<Array<Pokemon>|undefined>((get) => {
+const searchedPokemonAtom = atom<Array<Pokemon>>((get) => {
     const pokemons = get(filteredPokemonAtom)
     const search = get(searchPokemonAtom)
     const isAscending = get(sortAscendingPokemonAtom)
 
-    if (!pokemons) return undefined
+    // if (!pokemons) return undefined
 
     return matchSorter(pokemons, search, {keys: ["name"], sorter: (arr) => isAscending ? arr : arr.reverse()})
 })
 
-const paginatedPokemonAtom = atom<Array<Array<Pokemon>>|undefined>((get) => {
+const paginatedPokemonAtom = atom<Array<Array<Pokemon>>>((get) => {
     const pokemons = get(searchedPokemonAtom)
     const limit = get(limitPokemonAtom)
-    if (!pokemons) return undefined
+    // if (!pokemons) return undefined
     return chunk(pokemons, limit)
 })
 
@@ -63,7 +63,7 @@ export const totalPagePokemonAtom = atom<number>((get) => {
 
 export const currentPagePokemonAtom = atom<Array<Pokemon>|undefined>((get) => {
     const paginatedPokemon = get(paginatedPokemonAtom)
-    if (!paginatedPokemon) return undefined
+    // if (!paginatedPokemon) return undefined
     const activePage:number = clamp(0, get(paginationPokemonAtom), get(totalPagePokemonAtom) - 1)
     return paginatedPokemon[activePage]
 })
@@ -73,7 +73,7 @@ export const currentPageTotalPokemonAtom = atom<number>((get) => get(currentPage
 export const prevAndNextPokemonAtom = atomFamily((id:number) => atom((get) => {
     const pokemons = get(pokemonsAtom)
 
-    if (!pokemons) return {prev: null, next:null}
+    // if (!pokemons) return {prev: null, next:null}
 
     const index = pokemons.findIndex((pokemon) => pokemon.id === id)
 
