@@ -5,6 +5,7 @@ import PokemonTypeTag from "@/components/PokemonTypeTag";
 import {PokemonDetail} from "@/app/[id]/page";
 import {cn} from "@/lib/utils";
 import React from "react";
+import useSound from "@/app/[id]/_hooks/useSound";
 
 interface BodyProps {
     pokemonDetail: PokemonDetail,
@@ -110,10 +111,22 @@ const BodyContainer = ({children, className, ...props}: Readonly<{ children: Rea
     )
 }
 
+const SoundContainer = ({children, src}: Readonly<{ children: React.ReactNode, src: string }>) => {
+    const {play} = useSound(src)
+
+    return (
+        <div onClick={play}>
+            {children}
+        </div>
+    )
+}
+
 const Body = ({pokemonDetail, className, ...props}: BodyProps) => {
     return (
         <BodyContainer className={className} {...props}>
-            <Image src={pokemonDetail.image}/>
+            <SoundContainer src={pokemonDetail.sound}>
+                <Image src={pokemonDetail.image}/>
+            </SoundContainer>
             <Info pokemonDetail={pokemonDetail}/>
         </BodyContainer>
     )
