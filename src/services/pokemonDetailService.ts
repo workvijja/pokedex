@@ -26,7 +26,8 @@ const getPokemonDetail = async (id:number):Promise<PokemonDetail|undefined> => {
             {next: {revalidate: 60000}}
         ).then(async (res) => {
             const species = await res.json()
-            return species.flavor_text_entries[0].flavor_text
+            const englishFlavorText = species.flavor_text_entries.find((flavorText:{language: {name: string}}) => flavorText.language.name === "en")
+            return englishFlavorText.flavor_text
         })
 
         const data:PokemonDetail = {

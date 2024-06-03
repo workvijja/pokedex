@@ -1,7 +1,10 @@
-import { Suspense } from 'react'
+import React, { Suspense } from 'react'
 import {PokemonTypeColors} from "@/constants/pokemonTypeColors";
-import Detail from "@/pages/Detail";
 import getPokemonDetail from "@/services/pokemonDetailService";
+import {notFound} from "next/navigation";
+import Body from "@/components/detail/body";
+import Footer from "@/components/detail/footer";
+import {Skeleton} from "@/components/ui/skeleton";
 
 export interface PokemonStats {
     hp: number,
@@ -28,19 +31,38 @@ export interface PokemonDetail {
 const PokemonDetailPage = async ({id}:{id:number}) => {
     const pokemonDetail = await getPokemonDetail(id)
 
-    // TODO REDIRECT TO 404
-    if (!pokemonDetail) return null
+    if (!pokemonDetail) notFound()
 
     return (
-        <Detail pokemonDetail={pokemonDetail} />
+        <div className={"flex flex-col gap-4 w-full h-full"}>
+            <Body pokemonDetail={pokemonDetail}/>
+            <Footer/>
+        </div>
     )
 }
 
-const page = ({params:{id}}:{params:{id:number}}) => {
-    // TODO CREATE SKELETON
+const DetailSkeleton = () => {
     return (
-        <Suspense>
-            <PokemonDetailPage id={id} />
+        <div className={"flex flex-col gap-4 w-full h-full"}>
+            <div className={"h-full grow flex gap-4 flex-col md:flex-row items-center"}>
+                <Skeleton className={"w-64 h-64 md:w-96 md:h-96 rounded-md"}/>
+                <Skeleton className={"w-full h-full rounded-md"}/>
+            </div>
+            <div className={"flex justify-between items-center"}>
+                <Skeleton className={"w-32 h-8 rounded-md"}/>
+                <div className={"flex gap-2"}>
+                    <Skeleton className={"w-16 h-8 rounded-md"}/>
+                    <Skeleton className={"w-16 h-8 rounded-md"}/>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+const page = ({params: {id}}: { params: { id: number } }) => {
+    return (
+        <Suspense fallback={<DetailSkeleton/>}>
+            <PokemonDetailPage id={id}/>
         </Suspense>
     )
 }
